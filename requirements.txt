@@ -1,0 +1,14 @@
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
+PyPDF2
+python-docx
+python-pptx
+wakeonlan
+django
+djangorestframework
+adrf
+aiofiles
+asgiref
+pipmaster
+uvicorn

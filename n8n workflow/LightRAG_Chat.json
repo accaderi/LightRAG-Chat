@@ -1,0 +1,1411 @@
+{
+  "name": "LightRAG Chat",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ]
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        -400
+      ],
+      "id": "47e54641-4acd-48cc-a024-fb9c31c836a4",
+      "name": "WhatsApp Trigger",
+      "webhookId": "d84a6866-eb13-4b84-bf75-49928ee94da5",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "kKNdxEoWOgiAlJF8",
+          "name": "WhatsApp OAuth account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "459549693911915",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        520,
+        -460
+      ],
+      "id": "24ab974f-6876-4c19-b014-3831a1a4ca8b",
+      "name": "WhatsApp Business Cloud",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "i9DkTN91ZrvJ8w8Z",
+          "name": "WhatsApp account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1c0b8013-c67b-4bb7-ba3f-6366baed7e28",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -40,
+        140
+      ],
+      "id": "713a5813-5853-4673-bf5a-024be21e59b9",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        180,
+        80
+      ],
+      "id": "708a13c3-9ae0-4468-9f5b-9329998c52ed",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        180,
+        280
+      ],
+      "id": "e0a0cea0-5f9e-42e4-9418-aaf6f5b65d49",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "mSf4o7Eb6mwkS8wQ",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=1"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        320,
+        280
+      ],
+      "id": "390fabf1-510f-406d-806d-4a2180782665",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -220,
+        140
+      ],
+      "id": "7c43ba72-453f-4dcf-b8f3-1afefab70989",
+      "name": "Telegram Trigger",
+      "webhookId": "c24b8d8e-361a-4d3f-9818-77a3cba91d25",
+      "credentials": {
+        "telegramApi": {
+          "id": "IHjAa1LRMqVafh1N",
+          "name": "Telegram account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        520,
+        80
+      ],
+      "id": "23426bc9-1c2a-4c3a-b46f-4bf73b690b20",
+      "name": "Telegram",
+      "credentials": {
+        "telegramApi": {
+          "id": "IHjAa1LRMqVafh1N",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1c0b8013-c67b-4bb7-ba3f-6366baed7e28",
+              "leftValue": "={{ $json.messages }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -40,
+        -400
+      ],
+      "id": "01324ec1-d49c-4ef2-83cf-ca3a1fd8bbb1",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.messages[0].text.body }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        180,
+        -460
+      ],
+      "id": "86089f41-f460-4145-a0b0-c7ca8a42098f",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        180,
+        -260
+      ],
+      "id": "d5bbe5e7-3d14-4e73-950a-44abf3a7d34a",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "mSf4o7Eb6mwkS8wQ",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('If1').item.json.contacts[0].wa_id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        320,
+        -260
+      ],
+      "id": "7a4d4995-1652-4454-bd62-6a681476bb5b",
+      "name": "Window Buffer Memory1"
+    },
+    {
+      "parameters": {
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        -180
+      ],
+      "id": "ad5304e6-edea-4d00-8c46-7ec6cc95a215",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "JXNQuMmBUZmEKFNA",
+          "name": "Supabase account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        2480,
+        -80
+      ],
+      "id": "54f6c247-6811-4a4e-9158-2ff2bd80eb11",
+      "name": "Embeddings HuggingFace Inference",
+      "credentials": {
+        "huggingFaceApi": {
+          "id": "FjAXb1CYUvmpZWuD",
+          "name": "HuggingFaceApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        2320,
+        -300
+      ],
+      "id": "93a909df-29b2-49cd-bee6-fedddc5fde93",
+      "name": "Groq Chat Model2",
+      "credentials": {
+        "groqApi": {
+          "id": "mSf4o7Eb6mwkS8wQ",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        -100
+      ],
+      "id": "6deb8f79-b382-474c-bf75-b072d5bb3fc6",
+      "name": "Embeddings HuggingFace Inference1",
+      "credentials": {
+        "huggingFaceApi": {
+          "id": "FjAXb1CYUvmpZWuD",
+          "name": "HuggingFaceApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        -140
+      ],
+      "id": "e03574fe-1087-4149-9b47-f1d6e1f741ff",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 100,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        1480,
+        0
+      ],
+      "id": "dbe9170d-17ee-4534-ba91-ba5f1d9e5188",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        920,
+        -320
+      ],
+      "id": "8c93fd10-bf66-4348-a363-cbbcb5e3b77b",
+      "name": "When clicking ‘Test workflow’",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1KUanKAE7XNgUAIwwcSepebv5y6TcgfsQHP5a1v8DhpA",
+          "mode": "list",
+          "cachedResultName": "A CHRISTMAS CAROL",
+          "cachedResultUrl": "https://docs.google.com/document/d/1KUanKAE7XNgUAIwwcSepebv5y6TcgfsQHP5a1v8DhpA/edit?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1080,
+        -320
+      ],
+      "id": "d62a499f-ac60-4551-966a-d2b6a67c16cf",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "D0b6kcnWHZaqy0aY",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.question }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.4,
+      "position": [
+        2320,
+        -440
+      ],
+      "id": "b93b58b1-708c-4f53-94fc-020db3c75a8b",
+      "name": "Question and Answer Chain"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.retrieverVectorStore",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        -300
+      ],
+      "id": "f8044e94-b55f-43b4-adcd-488534900cf3",
+      "name": "Vector Store Retriever"
+    },
+    {
+      "parameters": {
+        "content": "## Insert data into Supabase vector store\nNote: Run this with the document before using retrieval.",
+        "height": 640,
+        "width": 800
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        860,
+        -460
+      ],
+      "id": "17f419ac-5903-41d0-a561-f6983ee7804f",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Retrieve data from vectorstore - Telegram Bot",
+        "height": 840,
+        "width": 1180,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1720,
+        -560
+      ],
+      "id": "a3789f17-af1c-4dc7-8cf4-74f0438b2368",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## AI chat bot for Whatsapp\nNote: Use Postgress memory for more robust bot.",
+        "height": 460,
+        "width": 1000,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        -560
+      ],
+      "id": "12c3bf97-82a7-4f40-8191-176017399280",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        1760,
+        -180
+      ],
+      "id": "3dc51537-c16c-429b-bbaf-da3c4db5d035",
+      "name": "Telegram Trigger - Start",
+      "webhookId": "c24b8d8e-361a-4d3f-9818-77a3cba91d25",
+      "credentials": {
+        "telegramApi": {
+          "id": "IHjAa1LRMqVafh1N",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "459549693911915",
+        "recipientPhoneNumber": "={{ $('If - Supabase or LightRAG - WApp').item.json.messages[0].from }}",
+        "textBody": "={{ $json.response.text }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        2680,
+        420
+      ],
+      "id": "aa7dc6f5-d5d6-474e-aa6b-5dfdcddddbc4",
+      "name": "WhatsApp Business Cloud1",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "i9DkTN91ZrvJ8w8Z",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "459549693911915",
+        "recipientPhoneNumber": "={{ $('If - Supabase or LightRAG - WApp').item.json.messages[0].from }}",
+        "textBody": "={{ $json.chunk }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        2700,
+        960
+      ],
+      "id": "6a09f71f-c333-40b9-8b82-28ee23652bf2",
+      "name": "WhatsApp Business Cloud2",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "i9DkTN91ZrvJ8w8Z",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        660
+      ],
+      "id": "02082331-3417-4854-9607-5a10fce58add",
+      "name": "Supabase Vector Store2",
+      "credentials": {
+        "supabaseApi": {
+          "id": "JXNQuMmBUZmEKFNA",
+          "name": "Supabase account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        2480,
+        780
+      ],
+      "id": "47e06cc0-d714-4ba7-acb0-da062049ddab",
+      "name": "Embeddings HuggingFace Inference2",
+      "credentials": {
+        "huggingFaceApi": {
+          "id": "FjAXb1CYUvmpZWuD",
+          "name": "HuggingFaceApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        2320,
+        540
+      ],
+      "id": "d5ef1c17-f449-4e2d-a422-6210a32b0996",
+      "name": "Groq Chat Model3",
+      "credentials": {
+        "groqApi": {
+          "id": "mSf4o7Eb6mwkS8wQ",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.question }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.4,
+      "position": [
+        2320,
+        420
+      ],
+      "id": "54c0f228-e5cb-4c4a-8e6b-678a67d3dc00",
+      "name": "Question and Answer Chain1"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.retrieverVectorStore",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        540
+      ],
+      "id": "667bbdbe-cfb0-443b-b159-7da9d8b81673",
+      "name": "Vector Store Retriever1"
+    },
+    {
+      "parameters": {
+        "content": "## AI chat bot for Whatsapp\nNote: Use Postgress memory for more robust bot.",
+        "height": 460,
+        "width": 1000,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        -20
+      ],
+      "id": "f69187a9-757c-4997-afa1-b07b34ba6dd2",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Retrieve data from vectorstore - WhatsApp Bot",
+        "height": 840,
+        "width": 1180,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        340
+      ],
+      "id": "386f7d5a-4cec-4776-b6c5-8150aaac3adb",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "# Simple chatbot with memory",
+        "height": 140,
+        "width": 990,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        -800
+      ],
+      "id": "d3311317-8022-4476-b5c7-4a1ed6c00c6e",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "# LightRAG Chat\n**1. Supabase vectorstore\n2. LightRAG system** (API is required to serve LightRAG)\n",
+        "height": 140,
+        "width": 2030,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        860,
+        -800
+      ],
+      "id": "a4e655ed-e7f9-4617-ac7d-7cf2a01e0afd",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://your.domain.comu/api/process/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token Your Generated Token From Python"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "mode",
+              "value": "={{ $json.mode }}"
+            },
+            {
+              "name": "question",
+              "value": "={{ $json.question }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 600000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2320,
+        100
+      ],
+      "id": "665cd6d5-46d3-403d-9760-c10a7406b3c2",
+      "name": "HTTP Request - Django API"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger - Start').item.json.message.chat.id }}",
+        "text": "={{ $json.chunk }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2700,
+        100
+      ],
+      "id": "d132e540-58eb-4d12-8781-2aa737b9b87b",
+      "name": "Telegram - LightRAG",
+      "credentials": {
+        "telegramApi": {
+          "id": "IHjAa1LRMqVafh1N",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('If - Supabase or LightRAG - TG').item.json.message.chat.id }}",
+        "text": "={{ $json.response.text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2700,
+        -440
+      ],
+      "id": "3622ad5d-8e87-4887-b857-3a4699d69bc1",
+      "name": "Telegram - Supabase",
+      "credentials": {
+        "telegramApi": {
+          "id": "IHjAa1LRMqVafh1N",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a8c90ec8-35dc-41f3-bf45-74a8399ce415",
+              "leftValue": "={{ $json.mode }}",
+              "rightValue": "sup",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2160,
+        -180
+      ],
+      "id": "e9a29f4c-51be-41f5-bfb9-654890d2961f",
+      "name": "If - Supabase or LightRAG - TG"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a8c90ec8-35dc-41f3-bf45-74a8399ce415",
+              "leftValue": "={{ $json.messages[0].text.body }}",
+              "rightValue": "sup ",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2180,
+        700
+      ],
+      "id": "c4d1b214-7219-430d-a1cb-fef71017ca20",
+      "name": "If - Supabase or LightRAG - WApp"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ]
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        700
+      ],
+      "id": "b5e0ea83-53ae-4d39-98d2-34263691a72e",
+      "name": "WhatsApp Trigger - Start",
+      "webhookId": "d84a6866-eb13-4b84-bf75-49928ee94da5",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "kKNdxEoWOgiAlJF8",
+          "name": "WhatsApp OAuth account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://your.domain.comu/api/process/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token Your Generated Token From Python"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "mode",
+              "value": "= {{ $json.mode }}"
+            },
+            {
+              "name": "question",
+              "value": "={{ $json.question }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 600000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2320,
+        960
+      ],
+      "id": "fa773626-1382-42ab-b48e-e3f3b28e8478",
+      "name": "HTTP Request1 - Django API"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        -320
+      ],
+      "id": "67205eaf-a50b-41ba-ba73-181395079f7c",
+      "name": "Supabase Vector Store1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "JXNQuMmBUZmEKFNA",
+          "name": "Supabase account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "inputString = $input.all()[0].json.message.text\n\nconst modes = ['sup', 'naive', 'local', 'global', 'hybrid', 'mix'];\nconst words = inputString.trim().split(/\\s+/);\nconst firstWord = words[0].toLowerCase();\n\nreturn {\n        mode: modes.includes(firstWord) ? firstWord : 'mix',\n        question: modes.includes(firstWord) ? words.slice(1).join(' ') : inputString\n    };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1960,
+        -180
+      ],
+      "id": "561f6a24-db88-4c33-869c-04d0397695fd",
+      "name": "Code - Create JSON with data"
+    },
+    {
+      "parameters": {
+        "jsCode": "inputString = $input.all()[0].json.messages[0].text.body\n\nconst modes = ['sup', 'naive', 'local', 'global', 'hybrid', 'mix'];\nconst words = inputString.trim().split(/\\s+/);\nconst firstWord = words[0].toLowerCase();\n\nreturn {\n        mode: modes.includes(firstWord) ? firstWord : 'mix',\n        question: modes.includes(firstWord) ? words.slice(1).join(' ') : inputString\n    };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1980,
+        700
+      ],
+      "id": "0f13d7eb-7807-40e5-8300-a12ba2b80e9e",
+      "name": "Code1 - Create JSON with data2"
+    },
+    {
+      "parameters": {
+        "jsCode": "input = $input.all()[0].json.response\nchunkSize = 4000\n       // Initialize an array to hold the chunks\n    const chunks = [];\n    let startIndex = 0;\n\n    while (startIndex < input.length) {\n        // Determine the end index for the current chunk\n        let endIndex = startIndex + chunkSize;\n\n        // If endIndex exceeds input length, set it to input length\n        if (endIndex >= input.length) {\n            endIndex = input.length;\n        } else {\n            // Backtrack to find the last space or newline character\n            const lastSpaceIndex = input.lastIndexOf(' ', endIndex);\n            const lastNewLineIndex = input.lastIndexOf('\\n', endIndex);\n            \n            // Choose the furthest valid index (either space or newline)\n            endIndex = Math.max(lastSpaceIndex, lastNewLineIndex);\n            \n            // If no valid index found, just use the original end index\n            if (endIndex === -1) {\n                endIndex = startIndex + chunkSize;\n            }\n        }\n\n        // Extract the current chunk and trim any trailing whitespace\n        const chunk = input.slice(startIndex, endIndex).trim();\n\n        // Push the chunk as a JSON object into the array\n        if (chunk) { // Ensure we don't push empty chunks\n            chunks.push({ chunk: chunk });\n        }\n\n        // Update start index for the next iteration\n        startIndex = endIndex + 1; // Move past the space/newline character\n    }\n\n    return chunks;\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2520,
+        100
+      ],
+      "id": "17a870d6-611d-429a-816a-7fec0bb771e8",
+      "name": "Code - Split the message to chunks"
+    },
+    {
+      "parameters": {
+        "jsCode": "input = $input.all()[0].json.response\nchunkSize = 4000\n       // Initialize an array to hold the chunks\n    const chunks = [];\n    let startIndex = 0;\n\n    while (startIndex < input.length) {\n        // Determine the end index for the current chunk\n        let endIndex = startIndex + chunkSize;\n\n        // If endIndex exceeds input length, set it to input length\n        if (endIndex >= input.length) {\n            endIndex = input.length;\n        } else {\n            // Backtrack to find the last space or newline character\n            const lastSpaceIndex = input.lastIndexOf(' ', endIndex);\n            const lastNewLineIndex = input.lastIndexOf('\\n', endIndex);\n            \n            // Choose the furthest valid index (either space or newline)\n            endIndex = Math.max(lastSpaceIndex, lastNewLineIndex);\n            \n            // If no valid index found, just use the original end index\n            if (endIndex === -1) {\n                endIndex = startIndex + chunkSize;\n            }\n        }\n\n        // Extract the current chunk and trim any trailing whitespace\n        const chunk = input.slice(startIndex, endIndex).trim();\n\n        // Push the chunk as a JSON object into the array\n        if (chunk) { // Ensure we don't push empty chunks\n            chunks.push({ chunk: chunk });\n        }\n\n        // Update start index for the next iteration\n        startIndex = endIndex + 1; // Move past the space/newline character\n    }\n\n    return chunks;\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2520,
+        960
+      ],
+      "id": "7d9fbb69-2e14-4a21-ac12-f5e95946532d",
+      "name": "Code - Split the message to chunks1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Retriever",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings HuggingFace Inference": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings HuggingFace Inference1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Retriever": {
+      "ai_retriever": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "ai_retriever",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Question and Answer Chain": {
+      "main": [
+        [
+          {
+            "node": "Telegram - Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger - Start": {
+      "main": [
+        [
+          {
+            "node": "Code - Create JSON with data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store2": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Retriever1",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings HuggingFace Inference2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store2",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Question and Answer Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Question and Answer Chain1": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Retriever1": {
+      "ai_retriever": [
+        [
+          {
+            "node": "Question and Answer Chain1",
+            "type": "ai_retriever",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Django API": {
+      "main": [
+        [
+          {
+            "node": "Code - Split the message to chunks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If - Supabase or LightRAG - TG": {
+      "main": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request - Django API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If - Supabase or LightRAG - WApp": {
+      "main": [
+        [
+          {
+            "node": "Question and Answer Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request1 - Django API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Trigger - Start": {
+      "main": [
+        [
+          {
+            "node": "Code1 - Create JSON with data2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1 - Django API": {
+      "main": [
+        [
+          {
+            "node": "Code - Split the message to chunks1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Create JSON with data": {
+      "main": [
+        [
+          {
+            "node": "If - Supabase or LightRAG - TG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1 - Create JSON with data2": {
+      "main": [
+        [
+          {
+            "node": "If - Supabase or LightRAG - WApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Split the message to chunks": {
+      "main": [
+        [
+          {
+            "node": "Telegram - LightRAG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Split the message to chunks1": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "06c36c5a-5600-49e8-aa65-e2f3f4087aed",
+  "meta": {
+    "instanceId": "6d27a73f9eb4560114bd4bcdcb35f33a08ecd39584bff223f1e5666206d531a8"
+  },
+  "id": "iuRCCPv1WhQXiIo0",
+  "tags": []
+}
