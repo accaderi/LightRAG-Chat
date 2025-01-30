@@ -1,13 +1,13 @@
 <h1 align="center"><strong>LightRAG Chat - Setup Guide</strong></h1>
 
 <p align="center">
-  <a href="https://youtu.be/cAO-oDGmIqs">
-    <img src="https://img.youtube.com/vi/cAO-oDGmIqs/0.jpg" alt="Youtube Video">
+  <a href="https://youtu.be/8_CVP5mrf6M">
+    <img src="https://img.youtube.com/vi/8_CVP5mrf6M/0.jpg" alt="Youtube Video">
   </a>
 </p>
 
 <p align="center">
-  <a href="https://youtu.be/cAO-oDGmIqs">Chatbot using Telegram or WhatsApp and local ollama models with LightRAG</a>
+  <a href="https://youtu.be/8_CVP5mrf6M">Chatbot using Telegram or WhatsApp and local ollama models with LightRAG</a>
 </p>
 
 ## Summary
